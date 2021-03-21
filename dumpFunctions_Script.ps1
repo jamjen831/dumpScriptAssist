@@ -1,16 +1,17 @@
-﻿#INL-Retro Cartidge Dump Script v0.6 by JJ831
+﻿#INL-Retro Cartidge Dump Script v0.7 by JJ831
 #Place this and NESMapper.json in the the host folder. 
 #May require running PS Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted" to allow running scripts
-
-#set default variables
-
-
-
 #Function for mapper lookup CSV from json
+#
+
 function Initialize-script {
 #Variables
     $inputJson = "NESMapper.json"
     $inputExe = ".\inlretro.exe"
+#Assemblies  
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+    Add-Type -AssemblyName PresentationFramework
     Test-exePath
 }
 #Check for the inlretro Executable.
@@ -24,7 +25,7 @@ function Test-exePath {
 }
 #Dialog to find executable
 function Get-inlretroExe($currentDiretory){ 
-    $msgBoxExe =  [System.Windows.MessageBox]::Show("No inlretro.exe found.  Please select the location")
+    $msgBoxExe = [System.Windows.Forms.MessageBox]::Show("No inlretro.exe found.  Please select the location")
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |  Out-Null
     $openExeDialog = New-Object System.Windows.Forms.OpenFileDialog
     $openExeDialog.InitialDirectory = $CurrentDirectory
@@ -32,6 +33,8 @@ function Get-inlretroExe($currentDiretory){
     $openExeDialog.ShowDialog() | Out-Null
     $chosenExe = $openExeDialog.FileName.ToString()
     $inputExe = "$chosenExe"
+    $setLocationPath = Split-Path -Path $chosenExe -Parent
+    Set-Location -Path "$setLocationPath"
     Test-json
 }
 #Check if NESMapper.json is in the local direcrtory and if found, call the function to process is
@@ -53,9 +56,7 @@ function Get-mapperCSV
     }
 #Generate the main window
 function Generate-form {
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
-    
+
     #Build Main Window
     $clickForm = New-Object System.Windows.Forms.Form
     $clickForm.Text = "Rom Dump"
@@ -187,7 +188,7 @@ function Generate-form {
     $clickForm.ShowDialog()| Out-Null   
     
   }
-
+#Get the location of a json file
 function Select-Json ($currentDiretory){ 
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |  Out-Null
     $jsonFileDialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -198,14 +199,13 @@ function Select-Json ($currentDiretory){
     Set-Variable -name inputJson -Value $jsonPath
     Get-MapperCSV2
     }
-
 #Convert json to CSV if loaded by button (doesn't spwan another form).
 function Get-MapperCSV2{ 
      $mapperList2 = Get-ChildItem $inputJson
      (Get-Content $mapperList2 | ConvertFrom-Json ) | 
      Export-Csv -NoTypeInformation .\NESMapper.csv -Force
 }
-
+#Select mapper values from datatable
 function Select-Mapper{
 #Use Out-Gridview to view dataset and select game
     $script:mapperData = Import-Csv .\NESMapper.csv | Out-GridView -outputMode Multiple | Select-Object Title, PRGSize, CHRSize, Mapper
@@ -230,7 +230,6 @@ function Select-luaScript ($currentDiretory){
     $openFileDialog.ShowDialog() | Out-Null
     $Script:inputScript = $openFileDialog.FileName.ToString()
 }
-
 #Setup Save Location Dialog for Dump
 function Select-binFile($initialDirectory){
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |  Out-Null
@@ -244,7 +243,6 @@ function Select-binFile($initialDirectory){
 function Start-Dump {
     Initialize-script
     }
-
 #Run the dump and redirect output
 function Save-binFile{
           cmd /c "$inputExe -s $InputScript -m $mapperValue -c $consoleValue -x $prgValue -y $chrValue -d $romOut" | Out-Host
