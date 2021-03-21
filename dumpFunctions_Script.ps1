@@ -1,5 +1,5 @@
 ﻿#INL-Retro Cartidge Dump Script v0.5 by JJ831
-#Place dumpCart_Form2.ps1 and NESMapper.json in the the host folder. 
+#Place this and NESMapper.json in the the host folder. 
 #May require running PS Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted" to allow running scripts
 
 #set default variables
