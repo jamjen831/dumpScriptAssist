@@ -30,7 +30,8 @@ function Get-inlretroExe($currentDiretory){
     $openExeDialog.InitialDirectory = $CurrentDirectory
     $openExeDialog.filter = "All Files (*.*)| *.*"
     $openExeDialog.ShowDialog() | Out-Null
-    $script:inputExe = $openExeDialog.FileName.ToString()
+    $chosenExe = $openExeDialog.FileName.ToString()
+    $inputExe = "$chosenExe"
     Test-json
 }
 #Check if NESMapper.json is in the local direcrtory and if found, call the function to process is
