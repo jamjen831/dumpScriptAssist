@@ -36,15 +36,15 @@ function Generate-form {
     $titleInput.AutoSize = $true
     $titleInput.Text = $gameTitle
 
-    #Add PRG Size Field
-    $PRGLabel = New-Object System.Windows.Forms.Label
-    $PRGLabel.Text = "PRG Size"
-    $PRGLabel.Location = New-Object System.Drawing.Size (10,60)
-    $PRGLabel.AutoSize = $true
-    $PRGInput = New-Object System.Windows.Forms.combobox
-    $PRGInput.Location = New-Object System.Drawing.Size (110,60)
-    $PRGInput.AutoSize = $true
-    $PRGInput.Text = $prgValue
+    #Add prg Size Field
+    $prgLabel = New-Object System.Windows.Forms.Label
+    $prgLabel.Text = "prg Size"
+    $prgLabel.Location = New-Object System.Drawing.Size (10,60)
+    $prgLabel.AutoSize = $true
+    $prgInput = New-Object System.Windows.Forms.combobox
+    $prgInput.Location = New-Object System.Drawing.Size (110,60)
+    $prgInput.AutoSize = $true
+    $prgInput.Text = $prgValue
 
     #Add CHR Field
     $chrLabel = New-Object System.Windows.Forms.Label
@@ -113,8 +113,8 @@ function Generate-form {
     $ClickForm.Controls.Add($saveButton)
     $ClickForm.Controls.Add($titleLabel)
     $ClickForm.Controls.Add($titleInput)
-    $ClickForm.Controls.Add($PRGLabel)
-    $ClickForm.Controls.Add($PRGInput)
+    $ClickForm.Controls.Add($prgLabel)
+    $ClickForm.Controls.Add($prgInput)
     $ClickForm.Controls.Add($chrLabel)
     $ClickForm.Controls.Add($chrInput)
     $ClickForm.Controls.Add($consoleLabel)
@@ -137,15 +137,15 @@ function Generate-form {
     #Mapper Lookup button action
     $mapperButton.Add_Click({
     #Use Out-Gridview to view dataset and select game
-    $script:mapperData = Import-Csv .\NESMapper.csv | Out-GridView -outputMode Multiple | Select-Object Title, PRGSize, CHRSize, Mapper
+    $script:mapperData = Import-Csv .\NESMapper.csv | Out-GridView -outputMode Multiple | Select-Object Title, prgSize, CHRSize, Mapper
     #Set varibales and fill in the form
     $gameTitle  =  $mapperData.Title
-    $prgValue = $mapperData.PRGSize
+    $prgValue = $mapperData.prgSize
     $chrvalue   =  $mapperData.CHRSize
     $mapperValue  =  $mapperData.Mapper   
     $consoleValue = "NES"
     $titleInput.Text  =  $mapperData.Title 
-    $PRGInput.Text  =   $mapperData.PRGSize   
+    $prgInput.Text  =   $mapperData.prgSize   
     $chrInput.Text   =  $mapperData.CHRSize 
     $consoleInput.Text  =  $consoleValue 
     $mapperInput.Text  =  $mapperData.Mapper 
@@ -154,7 +154,7 @@ function Generate-form {
     #Go button
     $goButton.Add_Click({
         $mapperValue = $mapperInput.Text
-        $prgValue = $PRGInput.Text 
+        $prgValue = $prgInput.Text 
         $chrValue =  $chrInput.Text 
         $consoleValue = $consoleInput.Text
         Save-binFile
