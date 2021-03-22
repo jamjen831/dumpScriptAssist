@@ -1,8 +1,7 @@
-﻿#INL-Retro Cartidge Dump Script v0.7 by JJ831
+﻿#INL-Retro Cartidge Dump Script v0.8 by JJ831
 #Place this and NESMapper.json in the the host folder. 
 #May require running PS Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted" to allow running scripts
 #Function for mapper lookup CSV from json
-#
 
 function Initialize-script {
 #Variables
@@ -29,7 +28,7 @@ function Get-inlretroExe($currentDiretory){
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |  Out-Null
     $openExeDialog = New-Object System.Windows.Forms.OpenFileDialog
     $openExeDialog.InitialDirectory = $CurrentDirectory
-    $openExeDialog.filter = "All Files (*.*)| *.*"
+    $openExeDialog.filter = "Executables (*.exe)| *.exe| All files (*.*)|*.*"
     $openExeDialog.ShowDialog() | Out-Null
     $chosenExe = $openExeDialog.FileName.ToString()
     $inputExe = "$chosenExe"
@@ -47,8 +46,7 @@ function Test-json {
         }
 }
 #Generate CSV from json
-function Get-mapperCSV
-    { 
+function Get-mapperCSV{ 
      $mapperList = Get-ChildItem $inputJson
      (Get-Content $mapperList | ConvertFrom-Json ) | 
      Export-Csv -NoTypeInformation .\NESMapper.csv -Force
@@ -193,7 +191,7 @@ function Select-Json ($currentDiretory){
     [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") |  Out-Null
     $jsonFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $jsonFileDialog.InitialDirectory = $CurrentDirectory
-    $jsonFileDialog.filter = "json Files (*.json)| *.*"
+    $jsonFileDialog.filter = "json Files (*.json)| *.json| All Files (*.*)|*.*"
     $jsonFileDialog.ShowDialog() | Out-Null
     $jsonPath = $jsonFileDialog.FileName.ToString()
     Set-Variable -name inputJson -Value $jsonPath
@@ -238,6 +236,8 @@ function Select-binFile($initialDirectory){
     $saveFileDialog.filter = "All files (*.*)| *.*"
     $saveFileDialog.ShowDialog() | Out-Null
     $script:romOut = $saveFileDialog.filename.ToString()
+    #Replace spaces with Underscores in filename
+    $script:romOut = $script:romOut -replace '\s','_'
 }
 #Create Function to actually run everything
 function Start-Dump {
