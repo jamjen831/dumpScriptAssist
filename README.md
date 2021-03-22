@@ -6,12 +6,11 @@ May require running PS Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricte
 
 Module:
 dumpFunctions_Module1.psm1
-Usese: 
+Usage -
 Import-Module -Path <path to dumpFunctions_Module1.psm1>  
 Start-Dump
 
 Script:
 dumpFunctions_script.ps1 
-
-Usage:
+Usage -
 ./dumpFunctions_script.ps1 
