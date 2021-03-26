@@ -13,6 +13,7 @@ Module:
 dumpFunctions_Module1.psm1
 Usage -
 Import-Module -Path \<path to dumpFunctions_Module1.psm1\> 
+
 Start-Dump
 
 Script:
