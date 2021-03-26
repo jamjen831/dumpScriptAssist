@@ -1,8 +1,8 @@
-﻿#INL-Retro Cartidge Dump Script v0.8 by JJ831
-#Place this and NESMapper.json in the the host folder. 
+﻿#INL-Retro Cartidge Dump Script v0.9 by JJ831
+#Best to place this and NESMapper.json in the the host folder.  
 #May require running PS Command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted" to allow running scripts
-#Function for mapper lookup CSV from json
 
+#Set initial values and load assemblies for GUI (froms!)
 function Initialize-script {
 #Variables
     $inputJson = "NESMapper.json"
@@ -59,7 +59,7 @@ function Generate-form {
     $clickForm = New-Object System.Windows.Forms.Form
     $clickForm.Text = "Rom Dump"
     $clickForm.Width = 600
-    $clickForm.Height = 400
+    $clickForm.Height = 450
     $clickForm.AutoScale = $true
     
     #Add Game Title Filed
@@ -143,6 +143,12 @@ function Generate-form {
     $goButton.Location = New-Object System.Drawing.Size (400,210)
     $goButton.Size = New-Object System.Drawing.Size (120,23)
     $goButton.Text = "Go!"
+
+    #Add Hash Button
+    $hashButton = New-Object System.Windows.Forms.Button
+    $hashButton.Location = New-Object System.Drawing.Size (400,260)
+    $hashButton.Size = New-Object System.Drawing.Size (120,23)
+    $hashButton.Text = "Get Hash"
    
     #Draw the elements on the main form
     $ClickForm.Controls.Add($goButton)
@@ -160,8 +166,10 @@ function Generate-form {
     $ClickForm.Controls.Add($mapperInput)
     $ClickForm.Controls.Add($mapperButton)
     $ClickForm.Controls.Add($jsonButton)
+    $ClickForm.Controls.Add($hashButton)
 
-    #Setup Button click actions
+#Setup Button click actions
+
     #Open json file button action
     $jsonButton.Add_Click({Select-Json})
 
@@ -182,6 +190,12 @@ function Generate-form {
         $consoleValue = $consoleInput.Text
         Save-binFile
     })
+    #Get-Hash button
+    $HashButton.Add_Click({
+        $romHash = Get-FileHash -Algorithm md5 -Path $romOut 
+        $msgBoxRomHash = [System.Windows.Forms.MessageBox]::Show("$romHash")
+    })
+
     #Show It
     $clickForm.ShowDialog()| Out-Null   
     
@@ -245,5 +259,12 @@ function Start-Dump {
     }
 #Run the dump and redirect output
 function Save-binFile{
-          cmd /c "$inputExe -s $InputScript -m $mapperValue -c $consoleValue -x $prgValue -y $chrValue -d $romOut" | Out-Host
-     }
+          cmd /c "$inputExe -s $InputScript -m $mapperValue -c $consoleValue -x $prgValue -y $chrValue -d $romOut" | Out-Host 
+              Get-RomHash
+               }
+
+function Get-RomHash {
+      Get-FileHash -Algorithm md5 -Path $romOut | Out-Host
+      Get-FileHash -Algorithm sha1 -Path $romOut | Out-Host
+
+ }
