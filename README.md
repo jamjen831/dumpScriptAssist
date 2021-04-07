@@ -1,4 +1,5 @@
 # dumpScriptAssist
+For use with http://www.infiniteneslives.com/inlretro.php
 
 
 WORK IN PROGRESS - Now runs an md5 and  sha1 on the full rom file
